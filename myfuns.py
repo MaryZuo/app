@@ -34,11 +34,13 @@ def myIBCF(new_user_ratings):
     S = pd.read_csv('https://github.com/MaryZuo/CS598_Project4/raw/refs/heads/main/S_sub_100_pd_top_30.csv', index_col=0)
     #print(S.head())
 
-    # generate newuser
+    # generate newuser based on new_user_ratings we got from users
     df_newuser = pd.DataFrame(columns=S.columns.to_list())
     df_newuser.loc[0] = np.nan
-    for key, value in new_user_ratings.items():
-        df_newuser['m' + str(key)] = value
+    #print(new_user_ratings)
+    if new_user_ratings:
+        for key, value in new_user_ratings.items():
+            df_newuser['m' + str(key)] = value
     newuser = df_newuser.loc[0]
     #print(newuser)
         
@@ -106,6 +108,7 @@ def get_recommended_movies(new_user_ratings):
     sorted_movies = myIBCF(new_user_ratings)
     sorted_movies_id = [int(item[1:]) for item in sorted_movies]
     #print(sorted_movies)
+    # The order of the recommended movies are based on the order of the sorted_movies_id
     recommended_movie = movies[movies["movie_id"].isin(sorted_movies_id)].copy()
     recommended_movie.loc[:, "movie_id"] = pd.Categorical(recommended_movie["movie_id"], categories=sorted_movies_id, ordered=True)
     recommended_movie = recommended_movie.sort_values("movie_id")
