@@ -159,9 +159,13 @@ def on_recommend_button_clicked(n):
 )
 
 def on_getting_recommendations(style, ratings, ids):
-    rating_input = {
-        ids[i]["movie_id"]: int(rating) for i, rating in enumerate(ratings) if rating is not None
-    }
+    # handle the case when no rating is given
+    if not any(ratings):
+        rating_input = {}
+    else:
+        rating_input = {
+            ids[i]["movie_id"]: int(rating) for i, rating in enumerate(ratings) if rating is not None
+            }
 
     #print(rating_input)
     recommended_movies = get_recommended_movies(rating_input)
@@ -174,7 +178,8 @@ def on_getting_recommendations(style, ratings, ids):
     Input({"type": "movie_rating", "movie_id": ALL}, "value"),
 )
 def update_button_recommened_visibility(values):
-    return not list(filter(None, values))
+    #return not list(filter(None, values))
+    return False
 
 if __name__ == "__main__":
     app.run_server(port=8080, debug=True)
